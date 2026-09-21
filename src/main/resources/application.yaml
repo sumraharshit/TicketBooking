@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: ticketBooking
+  datasource:
+    url: jdbc:mysql://localhost:3306/ticketBooking  #database connection url with the database name
+    username: root
+    password: DawnHorizon0@mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update   #automatically updates the schema of the database, there are other options as well, second option is create: creates the new schema everytime the connection is made, the previous schema is dropped with teh data, 3rd option is the create-drop, whihc create the new schema and drops it at rhe shutdown.
+    show-sql: true #shows thw query which is executing for the purpose of the debugging

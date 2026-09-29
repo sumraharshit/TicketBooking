@@ -1,6 +1,6 @@
 package com.booking.ticketBooking.util;
 
-public enum SeatStatus {
+public enum TicketStatus {
     AVAILABLE,
     BOOKED,
     PENDING

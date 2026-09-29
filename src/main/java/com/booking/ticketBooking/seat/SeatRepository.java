@@ -11,14 +11,15 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface SeatRepository extends JpaRepository<SeatEntity,Long> {
+//@Repository
+public interface SeatRepository  {
 
-     @Lock(value=LockModeType.PESSIMISTIC_WRITE)
-     @QueryHints({
-             @QueryHint(name="jakarta.persistence.lock.timeout", value="3000")
-     })
-     Optional<SeatEntity> findBySeatNumber(String seatNumber);
+   //  extends JpaRepository<SeatEntity,Long>
+//     @Lock(value=LockModeType.PESSIMISTIC_WRITE)
+//     @QueryHints({
+//             @QueryHint(name="jakarta.persistence.lock.timeout", value="3000")
+//     })
+//     Optional<SeatEntity> findBySeatNumber(String seatNumber);
 
 
 }

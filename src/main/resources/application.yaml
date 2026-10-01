@@ -2,9 +2,9 @@ spring:
   application:
     name: ticketBooking
   datasource:
-    url: jdbc:mysql://localhost:3306/DATABASE_NAME #database connection url with the database name
-    username: USERNAME
-    password: PASSWORD
+    url: jdbc:mysql://localhost:3306/ticketBooking #database connection url with the database name
+    username: root
+    password: DawnHorizon0@mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

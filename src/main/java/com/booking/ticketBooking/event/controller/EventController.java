@@ -3,6 +3,7 @@ package com.booking.ticketBooking.event.controller;
 import com.booking.ticketBooking.event.dto.EventDto;
 import com.booking.ticketBooking.event.entity.Event;
 import com.booking.ticketBooking.event.service.EventService;
+import com.booking.ticketBooking.ticket.entity.TicketDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +21,20 @@ public class EventController {
 }
 
     @GetMapping("/view/{id}")
-    public void viewEvent(@PathVariable Long id){
-        eventService.viewEvent(id);
+    public Event viewEvent(@PathVariable Long id){
+       return eventService.viewEvent(id);
     }
 
     @PostMapping("/addEvent")
     public void addNewEvent(@RequestBody EventDto eventDto){
         eventService.addEvent(eventDto);
     }
-
-    @PostMapping("/addTicket")
-    public void addTickets(){
-
-    }
+//
+//    @PostMapping("/addTickets")
+//    public void addTickets(@RequestBody TicketDto ticketDto){
+//
+//        eventService.addTickets(ticketDto);
+//    }
 
     @PatchMapping("/updateVenue")
     public void updateVenue(){

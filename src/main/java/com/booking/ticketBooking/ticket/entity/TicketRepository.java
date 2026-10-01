@@ -14,10 +14,10 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long>{
 
 
-    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints({
-            @QueryHint(name="jakarta.persistence.lock.timeout",value = "3000")
-    })
+//    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
+//    @QueryHints({
+//            @QueryHint(name="jakarta.persistence.lock.timeout",value = "3000")
+//    })
 //    @Query(nativeQuery = true, value = "SELECT * FROM ticket WHERE id:=id")
     Optional<Ticket> findById(Long id);
 }

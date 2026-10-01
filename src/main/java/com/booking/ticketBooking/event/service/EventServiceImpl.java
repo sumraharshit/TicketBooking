@@ -8,8 +8,14 @@ import com.booking.ticketBooking.event.repository.EventRepository;
 import com.booking.ticketBooking.event.repository.PerfomerRepository;
 import com.booking.ticketBooking.event.repository.VenueRepository;
 import com.booking.ticketBooking.event.utility.EventMapper;
+import com.booking.ticketBooking.ticket.entity.Ticket;
+import com.booking.ticketBooking.ticket.entity.TicketDto;
+import com.booking.ticketBooking.util.TicketStatus;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +47,9 @@ public class EventServiceImpl implements EventService{
           );
 
           event.addLineUp(perfomer);
-
+          if(dto.ticketsDto()!=null) {
+              addTickets(dto.ticketsDto(), event);
+          }
         });
 
         eventRepository.save(event);
@@ -50,10 +58,36 @@ public class EventServiceImpl implements EventService{
 
     }
 
-    public void viewEvent(Long id){
+    public Event viewEvent(Long id){
         Event event = eventRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("The event is not found")
         );
+
+        return event;
+    }
+
+    @Override
+    @Transactional
+    public void addTickets(TicketDto ticketDto, Event event) {
+
+//        Event event = viewEvent(ticketDto.eventId());
+
+
+        Long totalSeats = ticketDto.columnNumber() * ticketDto.rowNumber();
+
+        for(int i=1;i<=totalSeats;i++){
+            Character row = (char)((i / ticketDto.columnNumber()) + 'A');
+            Long seatNumber = i % ticketDto.columnNumber();
+            Ticket ticket = new Ticket();
+
+            ticket.setPrice(ticketDto.price());
+            ticket.setBookedAt(LocalDateTime.now());
+            ticket.setStatus(TicketStatus.AVAILABLE);
+            ticket.setRow(row);
+            ticket.setSeatNumber(seatNumber);
+
+            event.addTicket(ticket);
+        }
     }
 
 }

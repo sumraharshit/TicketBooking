@@ -1,20 +1,10 @@
 package com.booking.ticketBooking.booking.dto;
 
-public class BookingRequest {
+import lombok.Getter;
 
-    private Long seatId;
-    private String seatNumber;
-    private Long userId;
+import java.util.List;
 
-    public Long getUserId(){
-        return userId;
-    }
 
-    public String getSeatNumber(){
-        return seatNumber;
-    }
+public record BookingRequest(Long eventId, Long userId, Long ticketId) {
 
-    public Long getSeatId(){
-        return seatId;
-    }
 }

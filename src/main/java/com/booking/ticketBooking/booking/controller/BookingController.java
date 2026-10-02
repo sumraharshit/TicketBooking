@@ -18,8 +18,8 @@ public class BookingController {
    }
 
     @PostMapping("/createBooking")
-    public String createBooking(@RequestBody BookingRequest bookingRequest) throws Exception{
-      return bookingService.createBooking(bookingRequest);
+    public void createBooking(@RequestBody BookingRequest bookingRequest) throws Exception{
+     bookingService.createBooking(bookingRequest);
     }
 
 }

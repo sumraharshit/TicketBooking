@@ -1,16 +1,18 @@
 package com.booking.ticketBooking.ticket.entity;
 
+import com.booking.ticketBooking.booking.service.BookingService;
 import com.booking.ticketBooking.util.Constant;
 import com.booking.ticketBooking.util.TicketStatus;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.expression.AccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.rmi.AccessException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -53,47 +55,27 @@ public class TicketService {
 //        }
 //    }
 
-    //DISTRIBUTED LOCKING
 
     @Transactional
-    public void seatLocking(Long eventId, Long ticketId, Long userId) throws Exception {
+    public TicketStatus bookTicket(Long ticketId, Long userId) throws Exception{
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
-                () -> new NoSuchElementException("No ticket exists with this ticketId")
+                ()-> new NoSuchElementException("The ticket does not exists")
         );
 
-        if (ticket.getStatus() == TicketStatus.AVAILABLE) {
-
-            String token = UUID.randomUUID().toString() + userId;
-            log.info(token);
-            String lockName = "locks:" + eventId + ticketId;
-            log.info(lockName);
-            Boolean ok = redis.opsForValue().setIfAbsent(lockName, token, Duration.ofMinutes(Constant.TIME_TO_LIVE));
-            if (Boolean.TRUE.equals(ok)) {
-                log.info("The lock has been acquired for the following details:" + lockName + " " + token + " " + Constant.TIME_TO_LIVE + "for" + userId);
-                ticket.setUserId(userId);
-                ticket.setStatus(TicketStatus.BOOKED);
-                Boolean released = releaseLock(lockName, token);
-
-               if(released){
-                   log.info("The lock has been released: " + lockName + " " + token + " " + Constant.TIME_TO_LIVE);
-               }
-            } else {
-                throw new AccessException("The seat has been acquired by someone else. Try a new seat");
-            }
-        }
-        else{
-            throw new AccessException("The ticket is not available");
+        if(ticket.getStatus() != TicketStatus.AVAILABLE){
+            throw new AccessException("Ticket is not Available");
         }
 
+        ticket.setStatus(TicketStatus.BOOKED);
+        ticket.setUserId(userId);
+        ticket.setBookedAt(LocalDateTime.now());
+
+        return TicketStatus.BOOKED;
     }
 
-   private boolean releaseLock(String lockName, String token){
-        Long released = redis.execute(
-                Constant.RELEASE_LOCK_LUCA_SCRIPT, Collections.singletonList(lockName),token);
 
-        return released == 1L;
 
-    }
+
 
 }

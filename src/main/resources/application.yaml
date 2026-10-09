@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ticketBooking  #database connection url with the database name
     username: root
-    password: DawnHorizon0@mysql
+    password: PASSWORD
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

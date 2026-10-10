@@ -13,3 +13,23 @@ spring:
   redis:
     host: localhost
     port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id:
+      - notification-booking
+      - pdf-booking
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+#We are using the ErrorHandlingSerializer clas to avoid the poison pill situation where the a corrupted
+#object gets pushed to the topi, and upon consumption by the consumer it cannot be deserialized and throws the
+#excception. When the consumer retries it gives the same result, entering a deadlock situation. This
+#ErrorHandling deserializer is handling those errors for us.

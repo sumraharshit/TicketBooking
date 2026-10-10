@@ -57,7 +57,7 @@ public class TicketService {
 
 
     @Transactional
-    public TicketStatus bookTicket(Long ticketId, Long userId) throws Exception{
+    public Ticket bookTicket(Long ticketId, Long userId) throws Exception{
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
                 ()-> new NoSuchElementException("The ticket does not exists")
@@ -71,7 +71,7 @@ public class TicketService {
         ticket.setUserId(userId);
         ticket.setBookedAt(LocalDateTime.now());
 
-        return TicketStatus.BOOKED;
+        return ticket;
     }
 
 

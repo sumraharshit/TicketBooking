@@ -3,15 +3,23 @@ package com.booking.ticketBooking.booking.service;
 import com.booking.ticketBooking.booking.dto.BookingRequest;
 import com.booking.ticketBooking.booking.entity.BookingHistory;
 import com.booking.ticketBooking.booking.repository.BookingRepository;
+import com.booking.ticketBooking.ticket.entity.Ticket;
 import com.booking.ticketBooking.ticket.entity.TicketService;
 import com.booking.ticketBooking.util.Constant;
 import com.booking.ticketBooking.util.TicketStatus;
+import org.redisson.Redisson;
+import org.redisson.api.RFencedLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -25,16 +33,20 @@ public class BookingService {
     private final TicketService ticketService;
     private final BookingRepository bookingRepository;
     private final StringRedisTemplate redis;
+    private final KafkaTemplate<String, BookingCompleteDto> kafkaTemplate;
+
+
 
     @Autowired
-    BookingService(TicketService ticketService, BookingRepository bookingRepository, StringRedisTemplate redis){
+    BookingService(TicketService ticketService, BookingRepository bookingRepository,  StringRedisTemplate redis, KafkaTemplate<String, BookingCompleteDto> kafkaTemplate ){
         this.ticketService = ticketService;
         this.bookingRepository = bookingRepository;
         this.redis = redis;
+        this.kafkaTemplate = kafkaTemplate;
     }
 
 
-    //DISTRIBUTED LOCKING
+    //DISTRIBUTED LOCKING WITH REDIS
 
     public void createBooking(BookingRequest bookingRequest) throws Exception{
         log.info("Started Booking for the userId: " + bookingRequest.userId());
@@ -47,11 +59,14 @@ public class BookingService {
 
           if(Boolean.TRUE.equals(ok)){
               log.info("The lock has been acquired");
-              TicketStatus status = ticketService.bookTicket(bookingRequest.ticketId(), bookingRequest.userId());
-              if(status == TicketStatus.BOOKED){
+              Ticket ticket = ticketService.bookTicket(bookingRequest.ticketId(), bookingRequest.userId());
+              if(ticket.getStatus() == TicketStatus.BOOKED){
                   persistBooking(bookingRequest.ticketId(), bookingRequest.userId());
                   log.info("The booking has been completed for the userId :" + bookingRequest.userId()
                   + " with tickedId: " + bookingRequest.ticketId());
+
+
+                  kafkaTemplate.send("bookingTopic", new BookingCompleteDto(ticket.getUserId(), ticket.getSeatNumber(), ticket.getRow(), ticket.getPrice(), ticket.getEvent().getName(), ticket.getEvent().getVenue().getName(), ticket.getEvent().getEventDateTime()));
               }
           }
           else {
@@ -78,6 +93,8 @@ public class BookingService {
         return released == 1L;
 
     }
+
+
 
     public String persistBooking(Long ticketId, Long userId){
         BookingHistory bookingHistory = new BookingHistory();

@@ -2,6 +2,7 @@ package com.booking.ticketBooking.event.controller;
 
 import com.booking.ticketBooking.event.dto.PerformerDto;
 import com.booking.ticketBooking.event.service.PerformerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

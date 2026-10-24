@@ -3,7 +3,7 @@ package com.booking.ticketBooking.event.utility;
 import com.booking.ticketBooking.event.dto.EventDto;
 import com.booking.ticketBooking.event.dto.LineUpDto;
 import com.booking.ticketBooking.event.entity.Event;
-import com.booking.ticketBooking.ticket.entity.TicketDto;
+import com.booking.ticketBooking.ticket.dto.TicketDto;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.annotation.processing.Generated;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-10T19:25:40+0530",
+    date = "2026-10-15T23:28:39+0530",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.11 (Eclipse Adoptium)"
 )
 @Component

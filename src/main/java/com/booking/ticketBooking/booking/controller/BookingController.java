@@ -1,8 +1,13 @@
 package com.booking.ticketBooking.booking.controller;
 
+import com.booking.ticketBooking.booking.dto.BookingPaymentRequest;
 import com.booking.ticketBooking.booking.dto.BookingRequest;
 import com.booking.ticketBooking.booking.service.BookingService;
+import com.booking.ticketBooking.payment.dto.PaymentResponse;
+import com.razorpay.RazorpayException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +23,13 @@ public class BookingController {
    }
 
     @PostMapping("/createBooking")
-    public void createBooking(@RequestBody BookingRequest bookingRequest) throws Exception{
-     bookingService.createBooking(bookingRequest);
+    public ResponseEntity<BookingPaymentRequest> createBooking(@RequestBody BookingRequest bookingRequest) throws Exception{
+    return new ResponseEntity<>( bookingService.createBooking(bookingRequest), HttpStatus.OK);
+    }
+
+    @PostMapping("/bookingPayment/{bookingId}")
+    public ResponseEntity<PaymentResponse> paymentCreator(@RequestHeader("IdempotencyKey")String idempotencyKey, @PathVariable("bookingId") Long bookingId) throws RazorpayException, IllegalAccessException {
+        return bookingService.paymentCreator(idempotencyKey, bookingId);
     }
 
 }

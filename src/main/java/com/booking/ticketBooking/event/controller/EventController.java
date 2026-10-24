@@ -3,7 +3,6 @@ package com.booking.ticketBooking.event.controller;
 import com.booking.ticketBooking.event.dto.EventDto;
 import com.booking.ticketBooking.event.entity.Event;
 import com.booking.ticketBooking.event.service.EventService;
-import com.booking.ticketBooking.ticket.entity.TicketDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

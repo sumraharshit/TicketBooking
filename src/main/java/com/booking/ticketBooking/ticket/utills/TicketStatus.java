@@ -1,4 +1,4 @@
-package com.booking.ticketBooking.util;
+package com.booking.ticketBooking.ticket.utills;
 
 public enum TicketStatus {
     AVAILABLE,

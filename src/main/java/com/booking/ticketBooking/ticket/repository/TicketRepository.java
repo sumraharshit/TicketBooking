@@ -1,14 +1,8 @@
-package com.booking.ticketBooking.ticket.entity;
+package com.booking.ticketBooking.ticket.repository;
 
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.QueryHint;
-import lombok.NonNull;
+import com.booking.ticketBooking.ticket.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long>{

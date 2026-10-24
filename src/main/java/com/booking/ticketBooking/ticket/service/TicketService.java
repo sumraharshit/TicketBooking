@@ -1,8 +1,8 @@
-package com.booking.ticketBooking.ticket.entity;
+package com.booking.ticketBooking.ticket.service;
 
-import com.booking.ticketBooking.booking.service.BookingService;
-import com.booking.ticketBooking.util.Constant;
-import com.booking.ticketBooking.util.TicketStatus;
+import com.booking.ticketBooking.ticket.entity.Ticket;
+import com.booking.ticketBooking.ticket.repository.TicketRepository;
+import com.booking.ticketBooking.ticket.utills.TicketStatus;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.rmi.AccessException;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -59,9 +56,7 @@ public class TicketService {
     @Transactional
     public Ticket bookTicket(Long ticketId, Long userId) throws Exception{
 
-        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
-                ()-> new NoSuchElementException("The ticket does not exists")
-        );
+        Ticket ticket = findTicket(ticketId);
 
         if(ticket.getStatus() != TicketStatus.AVAILABLE){
             throw new AccessException("Ticket is not Available");
@@ -70,6 +65,14 @@ public class TicketService {
         ticket.setStatus(TicketStatus.BOOKED);
         ticket.setUserId(userId);
         ticket.setBookedAt(LocalDateTime.now());
+
+        return ticket;
+    }
+
+    public Ticket findTicket(Long ticketId){
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
+                ()-> new NoSuchElementException("The ticket does not exists")
+        );
 
         return ticket;
     }

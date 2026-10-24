@@ -9,8 +9,27 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaConfig {
 
     @Bean
-    public NewTopic kafkaTopic(){
+    public NewTopic bookingConfirmed(){
 
-return TopicBuilder.name("bookingTopic").build();
+    return TopicBuilder
+            .name("booking.confirmed").build();
     }
+
+
+    @Bean
+    public NewTopic paymentSuccessfulTopic(){
+        return TopicBuilder.name("payment.successful").build();
+    }
+
+    @Bean
+    public NewTopic paymentFailureTopic(){
+        return TopicBuilder.name("payment.failure").build();
+    }
+
+    @Bean
+    public NewTopic bookingFailure(){
+        return TopicBuilder.name("booking.failed").build();
+    }
+
+
 }

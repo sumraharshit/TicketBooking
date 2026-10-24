@@ -22,6 +22,7 @@ spring:
       group-id:
       - notification-booking
       - pdf-booking
+      - payment-successful
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       properties:
@@ -33,3 +34,8 @@ spring:
 #object gets pushed to the topi, and upon consumption by the consumer it cannot be deserialized and throws the
 #excception. When the consumer retries it gives the same result, entering a deadlock situation. This
 #ErrorHandling deserializer is handling those errors for us.
+
+razorpay:
+  key:
+    value: rzp_test_Tn1uqQUaZeIGOr
+    secret: raXgpvrHAT2RCboLh4jABNqj

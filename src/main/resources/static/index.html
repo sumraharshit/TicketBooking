@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form id="PaymentForm">
+    <label for="amount">Amount in INR: </label>
+    <input type="number" id="amount" name="amount" required><br><br>
+    <button type="button" id="paymentButton">Pay Now</button>
+</form>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+    document.getElementById("paymentButton").addEventListener("click", makePayment);
+
+    function makePayment(event){
+        const amount = document.getElementById("amount").value;
+
+        if(amount == null || Number(amount)<=0){
+            alert("Enter a valid Payment");
+            return;
+        }
+        fetch(
+            '/api/payment/createPayment',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/x-www-form-urlencoded'
+                },
+
+                body: `amount=${amount}`
+            }
+        ) .then(response => {
+            if(!response.ok){
+                throw new Error("The order has not been created: " + response.status);
+            }
+            return response.json();
+        }).then(order => {
+            const options = {
+                "key": "rzp_test_Tn1uqQUaZeIGOr",
+                "amount": order.amount,
+                "currency": order.currency,
+                "name": "Ticket Booking",
+                "description": "Payment for your Tickets",
+                "order_id": order.id,
+                "handler": verifyPayment,
+                "prefill": {
+                    "name": "User Name",
+                    "email": "user@example.com"
+                }
+            };
+
+            const rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function () {
+                window.location.href = '/failure.html';
+            });
+            rzp1.open();
+        })
+    }
+
+    function verifyPayment(response){
+        fetch('/api/payment/verifyPayment',
+
+            {
+                method: 'POST',
+                headers: {'Content-Type' : 'application/x-www-form-urlencoded'},
+                body: new URLSearchParams(
+                    {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    }
+                )
+            }
+
+        )
+            .then(res => {
+
+                window.location.href = res.url;
+            })
+            .catch(() => window.location.href = '/failure.html');
+    }
+</script>
+</body>
+</html>

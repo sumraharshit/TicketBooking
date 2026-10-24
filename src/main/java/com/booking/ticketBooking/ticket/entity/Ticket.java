@@ -1,7 +1,7 @@
 package com.booking.ticketBooking.ticket.entity;
 
 import com.booking.ticketBooking.event.entity.Event;
-import com.booking.ticketBooking.util.TicketStatus;
+import com.booking.ticketBooking.ticket.utills.TicketStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

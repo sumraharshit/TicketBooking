@@ -13,6 +13,7 @@ import com.booking.ticketBooking.ticket.entity.Ticket;
 import com.booking.ticketBooking.ticket.service.TicketService;
 import com.booking.ticketBooking.util.Constant;
 import com.booking.ticketBooking.ticket.utills.TicketStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.razorpay.RazorpayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,10 +142,10 @@ public class BookingService {
         return new ResponseEntity<>(response, response.status());
     }
 
-    public void successfulBooking(Long bookingId, Long ticketId) {
+    public void successfulBooking(Long bookingId, Long ticketId) throws JsonProcessingException {
 
-      BookingCompleteDto completeDto =  bookingTransaction.completeBooking(bookingId, ticketId);
-        bookingEventPublisher.confirmedBookingEvent(completeDto);
+      bookingTransaction.completeBooking(bookingId, ticketId);
+//        bookingEventPublisher.confirmedBookingEvent(completeDto);
 
 
     }

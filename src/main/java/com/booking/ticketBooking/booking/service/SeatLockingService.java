@@ -14,11 +14,11 @@ public class SeatLockingService {
         this.redisTemplate = redisTemplate;
     }
 
-    public boolean checkIfLockExists(Long ticketId, UUID bookingId){
+    public boolean checkIfLockExists(Long ticketId, String bookingId){
 
        String book = redisTemplate.opsForValue().get(ticketId);
 
-       return bookingId.toString().equals(book);
+       return bookingId.equals(book);
 
     }
 }

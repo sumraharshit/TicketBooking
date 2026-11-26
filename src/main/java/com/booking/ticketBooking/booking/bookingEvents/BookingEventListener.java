@@ -2,6 +2,7 @@ package com.booking.ticketBooking.booking.bookingEvents;
 
 import com.booking.ticketBooking.booking.service.BookingService;
 import com.booking.ticketBooking.payment.dto.PaymentEventDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,7 +21,7 @@ public class BookingEventListener {
     }
 
     @KafkaListener(topics = "payment.successful", groupId = "payment-successful")
-    public void paymentSuccessfulListener(PaymentEventDto paymentEventDto){
+    public void paymentSuccessfulListener(PaymentEventDto paymentEventDto) throws JsonProcessingException {
         log.info("The payment for successful booking is received");
 
         bookingService.successfulBooking(paymentEventDto.paymentBookingId(), paymentEventDto.paymentTicketId());

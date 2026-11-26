@@ -51,18 +51,19 @@ public class ExpiredBookingScheduler {
            if(processExpiredBooking(expired)){
 
                log.info("The DB experieced skew, redis still has lock");
+
+           } else {
+
+
+               expired.setStatus(BookingStatus.FAILED);
+               bookingRepository.save(expired);
+
+               log.info("The booking with id {} has been marked for failed", expired.getId());
+
+
+               kafkaTemplate.send("booking.failed", expired.getId().toString(), new BookingCompleteDto(expired.getUserId(), expired.getId(), expired.getTicketId(), BookingStatus.FAILED));
+
            }
-
-
-           expired.setStatus(BookingStatus.FAILED);
-           bookingRepository.save(expired);
-
-           log.info("The booking with id {} has been marked for failed", expired.getId());
-
-
-           kafkaTemplate.send("booking.failed", expired.getId().toString(), new BookingCompleteDto(expired.getUserId(), expired.getId(), expired.getTicketId(), BookingStatus.FAILED));
-
-
 
        });
 
@@ -71,8 +72,6 @@ public class ExpiredBookingScheduler {
 
     public boolean processExpiredBooking(BookingHistory history){
 
-        boolean lockExists = seatLockingService.checkIfLockExists(history.getTicketId(), history.getId());
-
-        return lockExists;
+        return seatLockingService.checkIfLockExists(history.getTicketId(), history.getId());
     }
 }

@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.UUID;
 
-public record BookingPaymentRequest(UUID bookingId, LocalTime expiresAt) {
+public record BookingPaymentRequest(String bookingId, LocalTime expiresAt) {
 }

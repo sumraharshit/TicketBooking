@@ -19,7 +19,7 @@ import java.util.UUID;
 public class BookingHistory {
 
     @Id
-    private UUID id;
+    private String id;
 
     private Long ticketId;
 
